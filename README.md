@@ -7,9 +7,8 @@
    docker-compose up -d
 
 2. **Перейти в back и скачать зависимости**:
-       ```bash
+    ```bash
    npm install
-
 
 3. **Запуск**:
        ```bash
