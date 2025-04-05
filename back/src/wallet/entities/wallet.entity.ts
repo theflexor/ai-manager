@@ -1,15 +1,39 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
+import { Transaction } from 'src/transactions/entities/transaction.entity';
 import { User } from 'src/users/entities/user.entity';
 
-@Entity()
+@Entity('wallets')
 export class Wallet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'decimal', default: 0 })
+  @Column({
+    type: 'numeric',
+    precision: 12,
+    scale: 2,
+    default: 0,
+  })
   balance: number;
 
-  @OneToOne(() => User, (user) => user.wallet)
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  // Один кошелек принадлежит одному пользователю
+  @OneToOne(() => User, (user) => user.wallet, { onDelete: 'CASCADE' })
+  @JoinColumn()
   user: User;
+
+  // История транзакций по кошельку
+  @OneToMany(() => Transaction, (transaction) => transaction.wallet)
+  transactions: Transaction[];
 }

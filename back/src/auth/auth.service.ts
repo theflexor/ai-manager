@@ -2,13 +2,15 @@ import * as bcrypt from 'bcrypt';
 
 import {
   BadRequestException,
+  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-import { SignInAuth_DTO } from './dto/sign-in-auth';
-import { SignUpAuth_DTO } from './dto/sign-up-auth';
+import { PasswordService } from './services/password.service';
+import { SignInAuth_DTO } from './dto/sign-in-auth.dto';
+import { SignUpAuth_DTO } from './dto/sign-up-auth.dto';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 
@@ -17,44 +19,72 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UsersService,
+    private passwordService: PasswordService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User> {
     const user: User | null = await this.userService.findOneByEmail(email);
-    if (!user) {
+    if (!user || !user.passwordHash || !user.salt) {
       throw new BadRequestException('User not found');
     }
-    const isMatch: boolean = bcrypt.compareSync(password, user.password);
-    if (!isMatch) {
+    const hash = this.passwordService.getHash(password, user.salt);
+
+    if (hash !== user.passwordHash) {
       throw new BadRequestException('Password does not match');
     }
+
     return user;
   }
-  async login(body: SignInAuth_DTO) {
+  async signIn(body: SignInAuth_DTO) {
     const user = await this.validateUser(body.email, body.password);
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-    };
-
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.generateTokens(user);
   }
 
-  async signUp(user: SignUpAuth_DTO) {
-    const userExists = await this.userService.findOneByEmail(user.email);
+  async signUp(body: SignUpAuth_DTO) {
+    const userExists = await this.userService.findOneByEmail(body.email);
 
     if (userExists) {
       throw new UnauthorizedException('Email is already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser = { ...user, password: hashedPassword };
-    const users = await this.userService.create({
-      ...newUser,
+    const salt = this.passwordService.getSalt();
+    const hash = this.passwordService.getHash(body.password, salt);
+
+    const user = await this.userService.create({
+      ...body,
+      passwordHash: hash,
+      salt,
     });
-    return this.login(user);
+    return user;
+  }
+
+  async googleLogin(
+    profile: any,
+  ): Promise<{ access_token: string; refresh_token: string }> {
+    const { email } = profile;
+
+    let user = await this.userService.findOneByEmail(email);
+
+    if (!user) {
+      user = await this.userService.create({
+        email,
+      });
+    }
+    return this.generateTokens(user);
+  }
+
+  private generateTokens(user: User) {
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = this.jwtService.sign(payload, {
+      expiresIn: '30s',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
+
+    console.log({ access_token: accessToken, refresh_token: refreshToken });
+
+    return { access_token: accessToken, refresh_token: refreshToken };
   }
 }

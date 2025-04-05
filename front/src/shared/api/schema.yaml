@@ -1,0 +1,403 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+  /users:
+    get:
+      operationId: UsersController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+  /users/{id}:
+    get:
+      operationId: UsersController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+    patch:
+      operationId: UsersController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+    delete:
+      operationId: UsersController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+  /wallet:
+    post:
+      operationId: WalletController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWalletDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Wallet
+    get:
+      operationId: WalletController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Wallet
+  /wallet/{id}:
+    get:
+      operationId: WalletController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Wallet
+    patch:
+      operationId: WalletController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWalletDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Wallet
+    delete:
+      operationId: WalletController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Wallet
+  /subscriptions:
+    post:
+      operationId: SubscriptionsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Subscriptions
+    get:
+      operationId: SubscriptionsController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscriptions
+  /subscriptions/{id}:
+    get:
+      operationId: SubscriptionsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscriptions
+    patch:
+      operationId: SubscriptionsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscriptions
+    delete:
+      operationId: SubscriptionsController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscriptions
+  /subscription-member:
+    post:
+      operationId: SubscriptionMemberController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionMemberDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - SubscriptionMember
+    get:
+      operationId: SubscriptionMemberController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionMember
+  /subscription-member/{id}:
+    get:
+      operationId: SubscriptionMemberController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionMember
+    patch:
+      operationId: SubscriptionMemberController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionMemberDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionMember
+    delete:
+      operationId: SubscriptionMemberController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionMember
+  /auth/signUp:
+    post:
+      operationId: AuthController_SignUp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpAuth_DTO'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Auth
+  /auth/signIn:
+    post:
+      operationId: AuthController_SignIn
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInAuth_DTO'
+      responses:
+        '200':
+          description: Sign in successful
+      tags:
+        - Auth
+  /auth/google:
+    get:
+      operationId: AuthController_googleLogin
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Auth
+  /auth/google/redirect:
+    get:
+      operationId: AuthController_googleRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Auth
+  /auth/session:
+    get:
+      operationId: AuthController_getSessionInfo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSessionInfoDto'
+      tags:
+        - Auth
+info:
+  title: AI manager
+  description: ''
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    UpdateUserDto:
+      type: object
+      properties: {}
+    CreateWalletDto:
+      type: object
+      properties: {}
+    UpdateWalletDto:
+      type: object
+      properties: {}
+    CreateSubscriptionDto:
+      type: object
+      properties: {}
+    UpdateSubscriptionDto:
+      type: object
+      properties: {}
+    CreateSubscriptionMemberDto:
+      type: object
+      properties: {}
+    UpdateSubscriptionMemberDto:
+      type: object
+      properties: {}
+    SignUpAuth_DTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Email
+        password:
+          type: string
+          example: password
+          description: Password
+      required:
+        - email
+        - password
+    SignInAuth_DTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Email
+      required:
+        - email
+    GetSessionInfoDto:
+      type: object
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        iat:
+          type: number
+        exp:
+          type: number
+      required:
+        - id
+        - email
+        - iat
+        - exp
