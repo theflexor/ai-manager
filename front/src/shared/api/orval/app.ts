@@ -4,7 +4,7 @@
  * AI manager
  * OpenAPI spec version: 1.0.0
  */
-import { createInstance } from '../api-instance';
+import { createInstance } from '../custom-instance';
 
 
 

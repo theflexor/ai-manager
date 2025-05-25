@@ -21,7 +21,12 @@ async function bootstrap() {
     credentials: true, // Разрешаем использование cookies и других учетных данных
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3001);
 }

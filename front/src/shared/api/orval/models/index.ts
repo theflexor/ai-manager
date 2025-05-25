@@ -5,14 +5,21 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './addMemberDto';
+export * from './createChatMessageDto';
+export * from './createGroupDto';
 export * from './createSubscriptionDto';
 export * from './createSubscriptionMemberDto';
-export * from './createUserDto';
+export * from './createTransactionDto';
 export * from './createWalletDto';
+export * from './depositDto';
 export * from './getSessionInfoDto';
 export * from './signInAuthDTO';
 export * from './signUpAuthDTO';
+export * from './updateChatMessageDto';
+export * from './updateGroupDto';
 export * from './updateSubscriptionDto';
 export * from './updateSubscriptionMemberDto';
+export * from './updateTransactionDto';
 export * from './updateUserDto';
 export * from './updateWalletDto';

@@ -5,12 +5,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  CreateWalletDto,
-  UpdateWalletDto
+  DepositDto
 } from './models';
 
-import { createInstance } from '../api-instance';
-import type { BodyType } from '../api-instance';
+import { createInstance } from '../custom-instance';
+import type { BodyType } from '../custom-instance';
 
 
 
@@ -18,17 +17,17 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
   export const getWallet = () => {
-const walletControllerCreate = (
-    createWalletDto: BodyType<CreateWalletDto>,
+const walletControllerDeposit = (
+    depositDto: BodyType<DepositDto>,
  options?: SecondParameter<typeof createInstance>,) => {
       return createInstance<void>(
-      {url: `/wallet`, method: 'POST',
+      {url: `/wallet/deposit`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
-      data: createWalletDto
+      data: depositDto
     },
       options);
     }
-  const walletControllerFindAll = (
+  const walletControllerGetBalance = (
     
  options?: SecondParameter<typeof createInstance>,) => {
       return createInstance<void>(
@@ -36,36 +35,6 @@ const walletControllerCreate = (
     },
       options);
     }
-  const walletControllerFindOne = (
-    id: string,
- options?: SecondParameter<typeof createInstance>,) => {
-      return createInstance<void>(
-      {url: `/wallet/${id}`, method: 'GET'
-    },
-      options);
-    }
-  const walletControllerUpdate = (
-    id: string,
-    updateWalletDto: BodyType<UpdateWalletDto>,
- options?: SecondParameter<typeof createInstance>,) => {
-      return createInstance<void>(
-      {url: `/wallet/${id}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: updateWalletDto
-    },
-      options);
-    }
-  const walletControllerRemove = (
-    id: string,
- options?: SecondParameter<typeof createInstance>,) => {
-      return createInstance<void>(
-      {url: `/wallet/${id}`, method: 'DELETE'
-    },
-      options);
-    }
-  return {walletControllerCreate,walletControllerFindAll,walletControllerFindOne,walletControllerUpdate,walletControllerRemove}};
-export type WalletControllerCreateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerCreate']>>>
-export type WalletControllerFindAllResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerFindAll']>>>
-export type WalletControllerFindOneResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerFindOne']>>>
-export type WalletControllerUpdateResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerUpdate']>>>
-export type WalletControllerRemoveResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerRemove']>>>
+  return {walletControllerDeposit,walletControllerGetBalance}};
+export type WalletControllerDepositResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerDeposit']>>>
+export type WalletControllerGetBalanceResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getWallet>['walletControllerGetBalance']>>>

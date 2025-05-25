@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,34 +9,33 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { Wallet } from 'src/wallet/entities/wallet.entity';
 
+export enum TransactionType {
+  DEPOSIT = 'deposit',
+  WITHDRAW = 'withdraw',
+}
+
 @Entity('transactions')
 export class Transaction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.transactions, { onDelete: 'CASCADE' })
-  @Index()
-  user: User;
-
-  @ManyToOne(() => Wallet, (wallet) => wallet.transactions, {
-    onDelete: 'CASCADE',
-  })
-  @Index()
-  wallet: Wallet;
-
-  @Column({
-    type: 'numeric',
-    precision: 12,
-    scale: 2,
-  })
+  @Column({ type: 'numeric', precision: 12, scale: 2 })
   amount: number;
 
-  @Column({ type: 'varchar', length: 10 })
-  type: 'deposit' | 'withdrawal';
+  @Column({ type: 'enum', enum: TransactionType })
+  type: TransactionType;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ nullable: true })
   description: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @ManyToOne(() => Wallet, (wallet) => wallet.transactions, {
+    onDelete: 'CASCADE',
+  })
+  wallet: Wallet;
+
+  @ManyToOne(() => User, (user) => user.transactions, { onDelete: 'CASCADE' })
+  user: User;
 }

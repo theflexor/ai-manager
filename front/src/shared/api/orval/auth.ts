@@ -4,91 +4,68 @@
  * AI manager
  * OpenAPI spec version: 1.0.0
  */
-import type { GetSessionInfoDto, SignInAuthDTO, SignUpAuthDTO } from './models';
+import type {
+  GetSessionInfoDto,
+  SignInAuthDTO,
+  SignUpAuthDTO
+} from './models';
 
-import type { BodyType } from '../api-instance';
-import { createInstance } from '../api-instance';
+import { createInstance } from '../custom-instance';
+import type { BodyType } from '../custom-instance';
+
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const getAuth = () => {
-  const authControllerSignUp = (
+
+  export const getAuth = () => {
+const authControllerSignUp = (
     signUpAuthDTO: BodyType<SignUpAuthDTO>,
-    options?: SecondParameter<typeof createInstance>
-  ) => {
-    return createInstance<void>(
-      {
-        url: `/auth/signUp`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        data: signUpAuthDTO,
-      },
-      options
-    );
-  };
+ options?: SecondParameter<typeof createInstance>,) => {
+      return createInstance<void>(
+      {url: `/auth/signUp`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: signUpAuthDTO
+    },
+      options);
+    }
   const authControllerSignIn = (
     signInAuthDTO: BodyType<SignInAuthDTO>,
-    options?: SecondParameter<typeof createInstance>
-  ) => {
-    return createInstance<void>(
-      {
-        url: `/auth/signIn`,
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        data: signInAuthDTO,
-      },
-      options
-    );
-  };
+ options?: SecondParameter<typeof createInstance>,) => {
+      return createInstance<void>(
+      {url: `/auth/signIn`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: signInAuthDTO
+    },
+      options);
+    }
   const authControllerGoogleLogin = (
-    options?: SecondParameter<typeof createInstance>
-  ) => {
-    return createInstance<void>(
-      { url: `/auth/google`, method: 'GET' },
-      options
-    );
-  };
+    
+ options?: SecondParameter<typeof createInstance>,) => {
+      return createInstance<void>(
+      {url: `/auth/google`, method: 'GET'
+    },
+      options);
+    }
   const authControllerGoogleRedirect = (
-    options?: SecondParameter<typeof createInstance>
-  ) => {
-    return createInstance<void>(
-      { url: `/auth/google/redirect`, method: 'GET' },
-      options
-    );
-  };
+    
+ options?: SecondParameter<typeof createInstance>,) => {
+      return createInstance<void>(
+      {url: `/auth/google/redirect`, method: 'GET'
+    },
+      options);
+    }
   const authControllerGetSessionInfo = (
-    options?: SecondParameter<typeof createInstance>
-  ) => {
-    return createInstance<GetSessionInfoDto>(
-      { url: `/auth/session`, method: 'GET' },
-      options
-    );
-  };
-  return {
-    authControllerSignUp,
-    authControllerSignIn,
-    authControllerGoogleLogin,
-    authControllerGoogleRedirect,
-    authControllerGetSessionInfo,
-  };
-};
-export type AuthControllerSignUpResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerSignUp']>>
->;
-export type AuthControllerSignInResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerSignIn']>>
->;
-export type AuthControllerGoogleLoginResult = NonNullable<
-  Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerGoogleLogin']>>
->;
-export type AuthControllerGoogleRedirectResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getAuth>['authControllerGoogleRedirect']>
-  >
->;
-export type AuthControllerGetSessionInfoResult = NonNullable<
-  Awaited<
-    ReturnType<ReturnType<typeof getAuth>['authControllerGetSessionInfo']>
-  >
->;
-
+    
+ options?: SecondParameter<typeof createInstance>,) => {
+      return createInstance<GetSessionInfoDto>(
+      {url: `/auth/session`, method: 'GET'
+    },
+      options);
+    }
+  return {authControllerSignUp,authControllerSignIn,authControllerGoogleLogin,authControllerGoogleRedirect,authControllerGetSessionInfo}};
+export type AuthControllerSignUpResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerSignUp']>>>
+export type AuthControllerSignInResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerSignIn']>>>
+export type AuthControllerGoogleLoginResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerGoogleLogin']>>>
+export type AuthControllerGoogleRedirectResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerGoogleRedirect']>>>
+export type AuthControllerGetSessionInfoResult = NonNullable<Awaited<ReturnType<ReturnType<typeof getAuth>['authControllerGetSessionInfo']>>>

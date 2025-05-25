@@ -1,24 +1,36 @@
 import './_styles/global.css';
 
+import { Inter } from 'next/font/google';
+import type { Metadata } from 'next';
 import { Providers } from './_provider';
-import { ThemeProvider } from 'next-themes';
+import type React from 'react';
+import { ThemeProvider } from '@/shared/providers/theme-provider';
+import { Toaster } from '@/shared/ui/sonner';
 
-export const metadata = {
-  title: 'Личный кабинет',
-  description: 'Управление личным кабинетом и кошельком',
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'AI Subscription Manager',
+  description: 'Manage your AI subscriptions and groups',
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="ru">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
         <Providers>
-          <ThemeProvider defaultTheme="light" storageKey="wallet-theme">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
+            <Toaster />
           </ThemeProvider>
         </Providers>
       </body>

@@ -11,4 +11,3 @@ export interface GetSessionInfoDto {
   iat: number;
   exp: number;
 }
-

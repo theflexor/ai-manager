@@ -5,4 +5,9 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export interface CreateSubscriptionDto { [key: string]: unknown }
+export interface CreateSubscriptionDto {
+  serviceName: string;
+  price: number;
+  description: string;
+  expiresAt: string;
+}

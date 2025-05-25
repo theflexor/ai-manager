@@ -64,78 +64,42 @@ paths:
           description: ''
       tags:
         - Users
-  /wallet:
+  /wallet/deposit:
     post:
-      operationId: WalletController_create
+      operationId: WalletController_deposit
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateWalletDto'
+              $ref: '#/components/schemas/DepositDto'
       responses:
         '201':
           description: ''
       tags:
         - Wallet
+  /wallet:
     get:
-      operationId: WalletController_findAll
+      operationId: WalletController_getBalance
       parameters: []
       responses:
         '200':
           description: ''
       tags:
         - Wallet
-  /wallet/{id}:
+  /wallet/transactions:
     get:
-      operationId: WalletController_findOne
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
+      operationId: TransactionsController_getTransactions
+      parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - Wallet
-    patch:
-      operationId: WalletController_update
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateWalletDto'
-      responses:
-        '200':
-          description: ''
-      tags:
-        - Wallet
-    delete:
-      operationId: WalletController_remove
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-      tags:
-        - Wallet
+        - Transactions
   /subscriptions:
     post:
-      operationId: SubscriptionsController_create
+      operationId: SubscriptionController_createSubscription
       parameters: []
       requestBody:
         required: true
@@ -147,64 +111,71 @@ paths:
         '201':
           description: ''
       tags:
-        - Subscriptions
-    get:
-      operationId: SubscriptionsController_findAll
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      tags:
-        - Subscriptions
-  /subscriptions/{id}:
-    get:
-      operationId: SubscriptionsController_findOne
+        - Subscription
+  /subscriptions/{id}/members:
+    post:
+      operationId: SubscriptionController_addMember
       parameters:
         - name: id
           required: true
           in: path
           schema:
-            type: string
-      responses:
-        '200':
-          description: ''
-      tags:
-        - Subscriptions
-    patch:
-      operationId: SubscriptionsController_update
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
+            type: number
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateSubscriptionDto'
+              $ref: '#/components/schemas/AddMemberDto'
       responses:
-        '200':
+        '201':
           description: ''
       tags:
-        - Subscriptions
-    delete:
-      operationId: SubscriptionsController_remove
+        - Subscription
+    get:
+      operationId: SubscriptionController_getMembers
       parameters:
         - name: id
           required: true
           in: path
           schema:
-            type: string
+            type: number
       responses:
         '200':
           description: ''
       tags:
-        - Subscriptions
-  /subscription-member:
+        - Subscription
+  /subscriptions/{id}/members/{userId}:
+    delete:
+      operationId: SubscriptionController_removeMember
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscription
+  /subscriptions/deactivate:
+    patch:
+      operationId: SubscriptionController_deactivateExpiredSubscriptions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Subscription
+  /subscription-members:
     post:
-      operationId: SubscriptionMemberController_create
+      operationId: SubscriptionMembersController_create
       parameters: []
       requestBody:
         required: true
@@ -216,18 +187,18 @@ paths:
         '201':
           description: ''
       tags:
-        - SubscriptionMember
+        - SubscriptionMembers
     get:
-      operationId: SubscriptionMemberController_findAll
+      operationId: SubscriptionMembersController_findAll
       parameters: []
       responses:
         '200':
           description: ''
       tags:
-        - SubscriptionMember
-  /subscription-member/{id}:
+        - SubscriptionMembers
+  /subscription-members/{id}:
     get:
-      operationId: SubscriptionMemberController_findOne
+      operationId: SubscriptionMembersController_findOne
       parameters:
         - name: id
           required: true
@@ -238,9 +209,9 @@ paths:
         '200':
           description: ''
       tags:
-        - SubscriptionMember
+        - SubscriptionMembers
     patch:
-      operationId: SubscriptionMemberController_update
+      operationId: SubscriptionMembersController_update
       parameters:
         - name: id
           required: true
@@ -257,9 +228,9 @@ paths:
         '200':
           description: ''
       tags:
-        - SubscriptionMember
+        - SubscriptionMembers
     delete:
-      operationId: SubscriptionMemberController_remove
+      operationId: SubscriptionMembersController_remove
       parameters:
         - name: id
           required: true
@@ -270,7 +241,7 @@ paths:
         '200':
           description: ''
       tags:
-        - SubscriptionMember
+        - SubscriptionMembers
   /auth/signUp:
     post:
       operationId: AuthController_SignUp
@@ -332,6 +303,181 @@ paths:
                 $ref: '#/components/schemas/GetSessionInfoDto'
       tags:
         - Auth
+  /chat-messages:
+    post:
+      operationId: ChatMessagesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessageDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - ChatMessages
+    get:
+      operationId: ChatMessagesController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+  /chat-messages/{id}:
+    get:
+      operationId: ChatMessagesController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+    patch:
+      operationId: ChatMessagesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChatMessageDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+    delete:
+      operationId: ChatMessagesController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+  /groups:
+    post:
+      operationId: GroupsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Groups
+    get:
+      operationId: GroupsController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+  /groups/{id}:
+    get:
+      operationId: GroupsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+    patch:
+      operationId: GroupsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+    delete:
+      operationId: GroupsController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+  /admin/subscriptions:
+    post:
+      operationId: SubscriptionAdminController_createSubscription
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - SubscriptionAdmin
+    get:
+      operationId: SubscriptionAdminController_getAllSubscriptions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionAdmin
+  /admin/subscriptions/{id}:
+    get:
+      operationId: SubscriptionAdminController_getSubscriptionById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionAdmin
 info:
   title: AI manager
   description: ''
@@ -344,16 +490,31 @@ components:
     UpdateUserDto:
       type: object
       properties: {}
-    CreateWalletDto:
-      type: object
-      properties: {}
-    UpdateWalletDto:
+    DepositDto:
       type: object
       properties: {}
     CreateSubscriptionDto:
       type: object
-      properties: {}
-    UpdateSubscriptionDto:
+      properties:
+        serviceName:
+          type: string
+          example: Chat gpt
+        price:
+          type: number
+          example: 10
+        description:
+          type: string
+          example: Chat gpt description
+        expiresAt:
+          format: date-time
+          type: string
+          example: '2023-10-10T00:00:00Z'
+      required:
+        - serviceName
+        - price
+        - description
+        - expiresAt
+    AddMemberDto:
       type: object
       properties: {}
     CreateSubscriptionMemberDto:
@@ -401,3 +562,15 @@ components:
         - email
         - iat
         - exp
+    CreateChatMessageDto:
+      type: object
+      properties: {}
+    UpdateChatMessageDto:
+      type: object
+      properties: {}
+    CreateGroupDto:
+      type: object
+      properties: {}
+    UpdateGroupDto:
+      type: object
+      properties: {}

@@ -1,34 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
+import { TransactionType } from './entities/transaction.entity';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 
-@Controller('transactions')
+@Controller('wallet/transactions')
+@UseGuards(JwtGuard)
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactionService: TransactionsService) {}
 
-  @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  @Post('deposit')
+  async deposit(
+    @Request() req,
+    @Body() createTransactionDto: CreateTransactionDto,
+  ) {
+    const { amount, description } = createTransactionDto;
+    return this.transactionService.createTransaction(
+      req.user,
+      amount,
+      TransactionType.DEPOSIT,
+      description,
+    );
+  }
+
+  @Post('withdraw')
+  async withdraw(
+    @Request() req,
+    @Body() createTransactionDto: CreateTransactionDto,
+  ) {
+    const { amount, description } = createTransactionDto;
+    return this.transactionService.createTransaction(
+      req.user,
+      amount,
+      TransactionType.WITHDRAW,
+      description,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionsService.update(+id, updateTransactionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  async getTransactions(@Request() req) {
+    return this.transactionService.getUserTransactions(req.user);
   }
 }

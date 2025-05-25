@@ -1,7 +1,7 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
-  Index,
   JoinColumn,
   OneToMany,
   OneToOne,
@@ -21,12 +21,18 @@ export class Wallet {
     type: 'numeric',
     precision: 12,
     scale: 2,
-    default: 0,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value),
+    },
   })
   balance: number;
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
   // Один кошелек принадлежит одному пользователю
   @OneToOne(() => User, (user) => user.wallet, { onDelete: 'CASCADE' })

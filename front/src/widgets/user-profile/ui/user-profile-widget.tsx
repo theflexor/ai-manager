@@ -1,7 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/avatar"
-import { Button } from "@/shared/ui/button"
-import { Edit } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+
+import { Button } from '@/shared/ui/button';
+import { Edit } from 'lucide-react';
 
 export function UserProfileWidget() {
   return (
@@ -14,7 +15,7 @@ export function UserProfileWidget() {
       </CardHeader>
       <CardContent className="flex flex-col items-center text-center">
         <Avatar className="h-24 w-24 mb-4">
-          <AvatarImage src="/placeholder.svg?height=96&width=96" alt="User" />
+          <AvatarImage src="/placeholder.png" alt="User" />
           <AvatarFallback>ИП</AvatarFallback>
         </Avatar>
 
@@ -27,16 +28,20 @@ export function UserProfileWidget() {
             <span className="text-sm font-medium">Активный</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Дата регистрации</span>
+            <span className="text-sm text-muted-foreground">
+              Дата регистрации
+            </span>
             <span className="text-sm font-medium">01.01.2023</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">ID пользователя</span>
+            <span className="text-sm text-muted-foreground">
+              ID пользователя
+            </span>
             <span className="text-sm font-medium">USR-12345</span>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 

@@ -1,9 +1,17 @@
 import { Module } from '@nestjs/common';
-import { SubscriptionsService } from './subscriptions.service';
-import { SubscriptionsController } from './subscriptions.controller';
+import { Subscription } from './entities/subscription.entity';
+import { SubscriptionController } from './subscriptions.controller';
+import { SubscriptionService } from './subscriptions.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SubscriptionMember } from 'src/subscription_members/entities/subscription_member.entity';
+import { User } from 'src/users/entities/user.entity';
+import { Group } from 'src/groups/entities/group.entity';
 
 @Module({
-  controllers: [SubscriptionsController],
-  providers: [SubscriptionsService],
+  imports: [
+    TypeOrmModule.forFeature([Subscription, SubscriptionMember, User, Group]),
+  ],
+  controllers: [SubscriptionController],
+  providers: [SubscriptionService],
 })
 export class SubscriptionsModule {}

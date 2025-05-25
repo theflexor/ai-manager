@@ -8,8 +8,8 @@ import type {
   UpdateUserDto
 } from './models';
 
-import { createInstance } from '../api-instance';
-import type { BodyType } from '../api-instance';
+import { createInstance } from '../custom-instance';
+import type { BodyType } from '../custom-instance';
 
 
 

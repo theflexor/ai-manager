@@ -2,12 +2,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { ChatMessage } from 'src/chat_messages/entities/chat_message.entity';
+import { Group } from 'src/groups/entities/group.entity';
 import { Subscription } from 'src/subscriptions/entities/subscription.entity';
 import { SubscriptionMember } from 'src/subscription_members/entities/subscription_member.entity';
 import { Transaction } from 'src/transactions/entities/transaction.entity';
@@ -42,6 +45,9 @@ export class User {
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
   // Связь один к одному с кошельком (при удалении пользователя – кошелек удаляется)
   @OneToOne(() => Wallet, (wallet) => wallet.user, { cascade: true })
   wallet: Wallet;
@@ -61,4 +67,12 @@ export class User {
   // Сообщения из чата
   @OneToMany(() => ChatMessage, (chatMessage) => chatMessage.user)
   chatMessages: ChatMessage[];
+
+  // Группы, где пользователь является владельцем
+  @OneToMany(() => Group, (group) => group.owner)
+  groups: Group[];
+
+  // Группы, где пользователь является участником
+  @ManyToMany(() => Group, (group) => group.members)
+  groupMemberships: Group[];
 }

@@ -5,10 +5,13 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ChatMessage } from './chat_messages/entities/chat_message.entity';
 import { ChatMessagesModule } from './chat_messages/chat_messages.module';
+import { Group } from './groups/entities/group.entity';
+import { GroupsModule } from './groups/groups.module';
 import { Module } from '@nestjs/common';
 import { Subscription } from './subscriptions/entities/subscription.entity';
 import { SubscriptionMember } from './subscription_members/entities/subscription_member.entity';
 import { SubscriptionMembersModule } from './subscription_members/subscription_members.module';
+import { SubscriptionsAdminModule } from './subscriptions_admin/subscriptions_admin.module';
 import { SubscriptionsModule } from './subscriptions/subscriptions.module';
 import { Transaction } from './transactions/entities/transaction.entity';
 import { TransactionsModule } from './transactions/transactions.module';
@@ -34,12 +37,13 @@ import { WalletModule } from './wallet/wallet.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         entities: [
-          Subscription,
-          User,
           SubscriptionMember,
-          Wallet,
+          Subscription,
           ChatMessage,
+          User,
+          Wallet,
           Transaction,
+          Group,
         ],
         synchronize: true,
         logging: true,
@@ -53,6 +57,8 @@ import { WalletModule } from './wallet/wallet.module';
     TransactionsModule,
     ChatMessagesModule,
     SubscriptionMembersModule,
+    GroupsModule,
+    SubscriptionsAdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

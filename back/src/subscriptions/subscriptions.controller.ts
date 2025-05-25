@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SubscriptionsService } from './subscriptions.service';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  Delete,
+  Patch,
+} from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
-import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
+import { SubscriptionService } from './subscriptions.service';
+import { AddMemberDto } from './dto/add-member.dto';
 
 @Controller('subscriptions')
-export class SubscriptionsController {
-  constructor(private readonly subscriptionsService: SubscriptionsService) {}
+export class SubscriptionController {
+  constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Post()
-  create(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-    return this.subscriptionsService.create(createSubscriptionDto);
+  async createSubscription(
+    @Body() createSubscriptionDto: CreateSubscriptionDto,
+  ) {
+    return this.subscriptionService.createSubscription(
+      createSubscriptionDto.serviceName,
+      createSubscriptionDto.price,
+      createSubscriptionDto.expiresAt,
+    );
   }
 
-  @Get()
-  findAll() {
-    return this.subscriptionsService.findAll();
+  @Post(':id/members')
+  async addMember(@Param('id') id: number, @Body() addMemberDto: AddMemberDto) {
+    return this.subscriptionService.addMember(id, addMemberDto.userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subscriptionsService.findOne(+id);
+  @Delete(':id/members/:userId')
+  async removeMember(@Param('id') id: number, @Param('userId') userId: number) {
+    return this.subscriptionService.removeMember(id, userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubscriptionDto: UpdateSubscriptionDto) {
-    return this.subscriptionsService.update(+id, updateSubscriptionDto);
+  @Get(':id/members')
+  async getMembers(@Param('id') id: number) {
+    return this.subscriptionService.getMembers(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subscriptionsService.remove(+id);
+  @Patch('deactivate')
+  async deactivateExpiredSubscriptions() {
+    return this.subscriptionService.deactivateExpiredSubscriptions();
   }
 }
