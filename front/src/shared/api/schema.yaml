@@ -1,0 +1,1325 @@
+openapi: 3.0.0
+paths:
+  /:
+    get:
+      operationId: AppController_getHello
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - App
+  /users:
+    get:
+      operationId: UsersController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+  /users/search:
+    get:
+      operationId: UsersController_searchUsers
+      parameters:
+        - name: q
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: search users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchUserResponseDto'
+      tags:
+        - Users
+  /users/profile/{id}:
+    get:
+      operationId: UsersController_getProfile
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get user profile by ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserDto'
+      tags:
+        - Users
+  /users/{id}:
+    patch:
+      operationId: UsersController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+    delete:
+      operationId: UsersController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Users
+  /wallet/deposit:
+    post:
+      operationId: WalletController_deposit
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+      tags:
+        - Wallet
+  /wallet:
+    get:
+      operationId: WalletController_getBalance
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wallet'
+      tags:
+        - Wallet
+  /wallet/transactions:
+    get:
+      operationId: WalletController_getTransactions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Wallet
+  /subscriptions:
+    post:
+      operationId: SubscriptionController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+      summary: create subscription
+      tags:
+        - Subscription
+    get:
+      operationId: SubscriptionController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+      summary: get all subscriptions
+      tags:
+        - Subscription
+  /subscriptions/{id}:
+    get:
+      operationId: SubscriptionController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSubscriptionDto'
+      summary: get subscription
+      tags:
+        - Subscription
+    patch:
+      operationId: SubscriptionController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSubscriptionDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+      summary: update subscription
+      tags:
+        - Subscription
+    delete:
+      operationId: SubscriptionController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      summary: delete subscription
+      tags:
+        - Subscription
+  /subscription-members/{subscriptionId}/add-member:
+    post:
+      operationId: SubscriptionMembersController_addMember
+      parameters:
+        - name: subscriptionId
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddSubscriptionMemberDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - SubscriptionMembers
+  /subscription-members/{id}:
+    get:
+      operationId: SubscriptionMembersController_findAll
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SubscriptionMember'
+      tags:
+        - SubscriptionMembers
+  /subscription-members/{memberId}:
+    delete:
+      operationId: SubscriptionMembersController_removeMember
+      parameters:
+        - name: memberId
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveSubscriptionMemberDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionMembers
+  /auth/signUp:
+    post:
+      operationId: AuthController_SignUp
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpAuth_DTO'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Auth
+  /auth/signIn:
+    post:
+      operationId: AuthController_SignIn
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInAuth_DTO'
+      responses:
+        '200':
+          description: Sign in successful
+      tags:
+        - Auth
+  /auth/google:
+    get:
+      operationId: AuthController_googleLogin
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Auth
+  /auth/google/redirect:
+    get:
+      operationId: AuthController_googleRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Auth
+  /auth/session:
+    get:
+      operationId: AuthController_getSessionInfo
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSessionInfoDto'
+      tags:
+        - Auth
+  /wallet/transactions/{id}:
+    get:
+      operationId: TransactionsController_getTransactions
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get user transactions by ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+      tags:
+        - Transactions
+  /chat-messages:
+    post:
+      operationId: ChatMessagesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessageDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - ChatMessages
+    get:
+      operationId: ChatMessagesController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+  /chat-messages/{id}:
+    get:
+      operationId: ChatMessagesController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+    patch:
+      operationId: ChatMessagesController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChatMessageDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+    delete:
+      operationId: ChatMessagesController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - ChatMessages
+  /groups:
+    post:
+      operationId: GroupsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupDto'
+      responses:
+        '201':
+          description: ''
+      tags:
+        - Groups
+    get:
+      operationId: GroupsController_findAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+  /groups/{id}:
+    get:
+      operationId: GroupsController_findOne
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+    patch:
+      operationId: GroupsController_update
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGroupDto'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+    delete:
+      operationId: GroupsController_remove
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Groups
+  /admin/subscriptions:
+    post:
+      operationId: SubscriptionAdminController_createSubscription
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags:
+        - SubscriptionAdmin
+    get:
+      operationId: SubscriptionAdminController_getAllSubscriptions
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionAdmin
+  /admin/subscriptions/{id}:
+    get:
+      operationId: SubscriptionAdminController_getSubscriptionById
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags:
+        - SubscriptionAdmin
+  /group-members:
+    post:
+      operationId: GroupMembersController_addMember
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddGroupMemberDto'
+      responses:
+        default:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupMemberResponseDto'
+      tags:
+        - GroupMembers
+    delete:
+      operationId: GroupMembersController_removeMember
+      parameters:
+        - name: groupId
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: userId
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      summary: Remove user from group
+      tags:
+        - GroupMembers
+  /group-members/group/{groupId}:
+    get:
+      operationId: GroupMembersController_getGroupMembers
+      parameters:
+        - name: groupId
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      summary: Get members of a group
+      tags:
+        - GroupMembers
+  /group-members/user/{userId}:
+    get:
+      operationId: GroupMembersController_getUserGroups
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      summary: Get groups where user is a member
+      tags:
+        - GroupMembers
+info:
+  title: AI manager
+  description: хуйня
+  version: 1.0.0
+  contact: {}
+tags: []
+servers: []
+components:
+  schemas:
+    SearchUserResponseDto:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: User ID
+        email:
+          type: string
+          example: user@example.com
+          description: User Email
+        isEmailVerified:
+          type: boolean
+          example: true
+          description: Email Verified Status
+        profilePicture:
+          type: string
+          example: https://example.com/profile.jpg
+          description: Profile Picture URL
+      required:
+        - id
+        - email
+        - isEmailVerified
+        - profilePicture
+    GetUserDto:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        email:
+          type: string
+          example: nurdanokenov@gmail.com
+        isEmailVerified:
+          type: boolean
+          example: false
+        profilePicture:
+          type: string
+          example: ''
+        fullName:
+          type: string
+          example: nurdan okenov
+        bio:
+          type: string
+          example: I'm a software engineer with a passion for AI and фывфыв
+        role:
+          type: string
+          example: user
+        preferences:
+          type: object
+          example: null
+        createdAt:
+          type: string
+          example: '2025-05-27T10:27:59.742Z'
+        updatedAt:
+          type: string
+          example: '2025-05-27T12:58:21.370Z'
+      required:
+        - id
+        - email
+        - isEmailVerified
+        - profilePicture
+        - fullName
+        - bio
+        - role
+        - preferences
+        - createdAt
+        - updatedAt
+    UpdateUserDto:
+      type: object
+      properties:
+        fullName:
+          type: string
+          description: The full name of the user
+          example: John Doe
+        bio:
+          type: string
+          description: The bio of the user
+          example: >-
+            I'm a software engineer with a passion for AI and subscription
+            management.
+        profilePicture:
+          type: string
+          description: The profile picture URL of the user
+          example: https://example.com/profile.jpg
+      required:
+        - fullName
+        - bio
+        - profilePicture
+    DepositDto:
+      type: object
+      properties:
+        amount:
+          type: number
+          example: 100
+          description: Amount to deposit
+      required:
+        - amount
+    Wallet:
+      type: object
+      properties:
+        id:
+          type: number
+        balance:
+          type: number
+        updatedAt:
+          format: date-time
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - balance
+        - updatedAt
+        - createdAt
+    CreateSubscriptionDto:
+      type: object
+      properties:
+        serviceName:
+          type: string
+          example: ChatGPT Plus
+        price:
+          type: number
+          example: 20
+        currency:
+          type: string
+          example: USD
+          enum:
+            - USD
+            - EUR
+            - RUB
+            - UAH
+            - KGS
+        description:
+          type: string
+          example: Подписка на GPT-4
+        startsAt:
+          format: date-time
+          type: string
+          example: '2025-06-01T00:00:00Z'
+        expiresAt:
+          format: date-time
+          type: string
+          example: '2025-12-01T00:00:00Z'
+        type:
+          type: string
+          example: personal
+          enum:
+            - personal
+            - group
+            - trial
+      required:
+        - serviceName
+        - price
+        - currency
+        - startsAt
+        - expiresAt
+        - type
+    SubscriptionMember:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: Unique identifier for the subscription member
+        subscription:
+          description: The subscription this member belongs to
+          allOf:
+            - $ref: '#/components/schemas/Subscription'
+        user:
+          description: The user who is a member of the subscription
+          allOf:
+            - $ref: '#/components/schemas/User'
+        isOwner:
+          type: boolean
+          example: false
+          description: Indicates if the user is the owner of the subscription
+        addedAt:
+          format: date-time
+          type: string
+          example: '2024-06-03T12:34:56.789Z'
+          description: Date when the member was added
+      required:
+        - id
+        - subscription
+        - user
+        - isOwner
+        - addedAt
+    ChatMessage:
+      type: object
+      properties: {}
+    Group:
+      type: object
+      properties: {}
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: Subscription ID
+        userId:
+          type: number
+          example: 12
+          description: ID of the user who owns the subscription
+        user:
+          description: The user who owns the subscription
+          allOf:
+            - $ref: '#/components/schemas/User'
+        serviceName:
+          type: string
+          example: ChatGPT Plus
+          description: Name of the subscribed service
+        price:
+          type: number
+          example: 20
+          description: Subscription price
+        currency:
+          type: string
+          example: USD
+          description: Currency of the subscription
+          enum:
+            - USD
+            - EUR
+            - RUB
+            - UAH
+            - KGS
+          nullable: false
+          default: USD
+        description:
+          type: string
+          example: Access to GPT-4
+          description: Description of the subscription
+        expiresAt:
+          format: date-time
+          type: string
+          example: '2025-12-01T00:00:00Z'
+          description: Subscription expiration date
+        startsAt:
+          format: date-time
+          type: string
+          example: '2025-06-01T00:00:00Z'
+          description: Subscription start date
+        isActive:
+          type: boolean
+          example: true
+          description: Is the subscription active
+        type:
+          type: string
+          example: personal
+          enum:
+            - personal
+            - group
+            - trial
+          description: Type of the subscription
+        createdAt:
+          format: date-time
+          type: string
+          example: '2025-05-01T12:00:00Z'
+          description: Creation date
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2025-05-10T12:00:00Z'
+          description: Last update date
+        members:
+          description: Members of the subscription
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionMember'
+        chatMessages:
+          description: Chat messages related to the subscription
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        group:
+          nullable: true
+          description: Group associated with the subscription (if any)
+          allOf:
+            - $ref: '#/components/schemas/Group'
+      required:
+        - id
+        - userId
+        - user
+        - serviceName
+        - price
+        - currency
+        - expiresAt
+        - startsAt
+        - isActive
+        - type
+        - createdAt
+        - updatedAt
+        - members
+        - chatMessages
+        - group
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: Уникальный идентификатор транзакции
+        amount:
+          type: number
+          example: 199.99
+          description: Сумма транзакции
+          format: decimal
+        type:
+          type: string
+          example: INCOME
+          enum:
+            - deposit
+            - withdraw
+          description: Тип транзакции
+        description:
+          type: string
+          example: Оплата подписки
+          description: Описание транзакции
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-05-28T12:34:56.789Z'
+          description: Дата создания транзакции
+        wallet:
+          description: Кошелек, к которому относится транзакция
+          allOf:
+            - $ref: '#/components/schemas/Wallet'
+        user:
+          description: Пользователь, совершивший транзакцию
+          allOf:
+            - $ref: '#/components/schemas/User'
+      required:
+        - id
+        - amount
+        - type
+        - createdAt
+        - wallet
+        - user
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: User ID
+        email:
+          type: string
+          example: user@example.com
+          description: Email
+        passwordHash:
+          type: string
+          example: hashed_pw
+          description: Password hash
+        salt:
+          type: string
+          example: random_salt
+          description: Salt
+        isEmailVerified:
+          type: boolean
+          example: true
+          description: Email verified
+        profilePicture:
+          type: string
+          example: https://pic.url
+          description: Avatar URL
+        fullName:
+          type: string
+          example: John Doe
+          description: Name
+        bio:
+          type: string
+          example: Short bio
+          description: Bio
+        role:
+          type: string
+          example: user
+          description: Role
+        preferences:
+          type: object
+          example:
+            theme: dark
+          description: Prefs
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-06-03T12:34:56Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-06-04T12:00:00Z'
+          description: Updated at
+        wallet:
+          description: Wallet
+          allOf:
+            - $ref: '#/components/schemas/Wallet'
+        subscriptions:
+          description: Owner of subscriptions
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+        subscriptionMembers:
+          description: Member of subscriptions
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionMember'
+        transactions:
+          description: Transactions
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        chatMessages:
+          description: Messages
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        x:
+          description: Owned groups
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        groupMemberships:
+          description: Joined groups
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+      required:
+        - id
+        - email
+        - passwordHash
+        - salt
+        - isEmailVerified
+        - role
+        - createdAt
+        - updatedAt
+        - wallet
+        - subscriptions
+        - subscriptionMembers
+        - transactions
+        - chatMessages
+        - x
+        - groupMemberships
+    GetSubscriptionDto:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+          description: Subscription ID
+        userId:
+          type: number
+          example: 12
+          description: ID of the user who owns the subscription
+        user:
+          description: The user who owns the subscription
+          allOf:
+            - $ref: '#/components/schemas/User'
+        serviceName:
+          type: string
+          example: ChatGPT Plus
+          description: Name of the subscribed service
+        price:
+          type: number
+          example: 20
+          description: Subscription price
+        currency:
+          type: string
+          example: USD
+          description: Currency of the subscription
+          enum:
+            - USD
+            - EUR
+            - RUB
+            - UAH
+            - KGS
+          nullable: false
+          default: USD
+        description:
+          type: string
+          example: Access to GPT-4
+          description: Description of the subscription
+        expiresAt:
+          format: date-time
+          type: string
+          example: '2025-12-01T00:00:00Z'
+          description: Subscription expiration date
+        startsAt:
+          format: date-time
+          type: string
+          example: '2025-06-01T00:00:00Z'
+          description: Subscription start date
+        isActive:
+          type: boolean
+          example: true
+          description: Is the subscription active
+        type:
+          type: string
+          example: personal
+          enum:
+            - personal
+            - group
+            - trial
+          description: Type of the subscription
+        createdAt:
+          format: date-time
+          type: string
+          example: '2025-05-01T12:00:00Z'
+          description: Creation date
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2025-05-10T12:00:00Z'
+          description: Last update date
+        members:
+          description: Members of the subscription
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionMember'
+        chatMessages:
+          description: Chat messages related to the subscription
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        group:
+          nullable: true
+          description: Group associated with the subscription (if any)
+          allOf:
+            - $ref: '#/components/schemas/Group'
+        isOwner:
+          type: boolean
+          example: false
+          description: Subscription owner
+      required:
+        - id
+        - userId
+        - user
+        - serviceName
+        - price
+        - currency
+        - expiresAt
+        - startsAt
+        - isActive
+        - type
+        - createdAt
+        - updatedAt
+        - members
+        - chatMessages
+        - group
+        - isOwner
+    UpdateSubscriptionDto:
+      type: object
+      properties:
+        serviceName:
+          type: string
+          example: ChatGPT Plus
+        price:
+          type: number
+          example: 20
+        currency:
+          type: string
+          example: USD
+          enum:
+            - USD
+            - EUR
+            - RUB
+            - UAH
+            - KGS
+        description:
+          type: string
+          example: Подписка на GPT-4
+        startsAt:
+          format: date-time
+          type: string
+          example: '2025-06-01T00:00:00Z'
+        expiresAt:
+          format: date-time
+          type: string
+          example: '2025-12-01T00:00:00Z'
+        type:
+          type: string
+          example: personal
+          enum:
+            - personal
+            - group
+            - trial
+      required:
+        - serviceName
+        - price
+        - currency
+        - startsAt
+        - expiresAt
+        - type
+    AddSubscriptionMemberDto:
+      type: object
+      properties:
+        userId:
+          type: number
+          example: 1
+          description: id
+      required:
+        - userId
+    RemoveSubscriptionMemberDto:
+      type: object
+      properties:
+        userId:
+          type: number
+          example: 1
+          description: id
+      required:
+        - userId
+    SignUpAuth_DTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Email
+        password:
+          type: string
+          example: password
+          description: Password
+      required:
+        - email
+        - password
+    SignInAuth_DTO:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Email
+      required:
+        - email
+    GetSessionInfoDto:
+      type: object
+      properties:
+        id:
+          type: number
+        email:
+          type: string
+        iat:
+          type: number
+        exp:
+          type: number
+      required:
+        - id
+        - email
+        - iat
+        - exp
+    CreateChatMessageDto:
+      type: object
+      properties: {}
+    UpdateChatMessageDto:
+      type: object
+      properties: {}
+    CreateGroupDto:
+      type: object
+      properties: {}
+    UpdateGroupDto:
+      type: object
+      properties: {}
+    AddGroupMemberDto:
+      type: object
+      properties:
+        groupId:
+          type: number
+          example: 1
+          description: ID группы
+        userId:
+          type: number
+          example: 5
+          description: ID пользователя
+        isAdmin:
+          type: boolean
+          example: false
+          description: Является ли админом
+      required:
+        - groupId
+        - userId
+    GroupMemberResponseDto:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 12
+          description: ID записи участника
+        userId:
+          type: number
+          example: 5
+          description: ID пользователя
+        email:
+          type: string
+          example: user@example.com
+          description: Email участника
+        fullName:
+          type: string
+          example: John Doe
+          description: Имя участника
+        isAdmin:
+          type: boolean
+          example: false
+          description: Является ли админом
+        joinedAt:
+          type: string
+          example: '2024-06-20T12:00:00Z'
+          description: Когда добавлен
+      required:
+        - id
+        - userId
+        - email
+        - isAdmin
+        - joinedAt

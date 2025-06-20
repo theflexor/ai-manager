@@ -1,34 +1,67 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SubscriptionsService } from './subscriptions.service';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Get,
+  Delete,
+  Patch,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { SubscriptionService } from './subscriptions.service';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Subscription } from './entities/subscription.entity';
+import { RequestWithUser } from 'src/types/request-with-user';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
+import { GetSubscriptionDto } from './dto/get-subscription.dto';
 
 @Controller('subscriptions')
-export class SubscriptionsController {
-  constructor(private readonly subscriptionsService: SubscriptionsService) {}
+@UseGuards(JwtGuard)
+export class SubscriptionController {
+  constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Post()
-  create(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-    return this.subscriptionsService.create(createSubscriptionDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.subscriptionsService.findAll();
+  @ApiOperation({ summary: 'create subscription' })
+  @ApiResponse({ status: 201, type: Subscription })
+  async create(
+    @Body() dto: CreateSubscriptionDto,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.subscriptionService.create(dto, req.session);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subscriptionsService.findOne(+id);
+  @ApiOperation({ summary: 'get subscription' })
+  @ApiResponse({ status: 200, type: GetSubscriptionDto })
+  async findOne(@Request() req: RequestWithUser, @Param('id') id: number) {
+    return this.subscriptionService.findOne(id, req.session);
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'get all subscriptions' })
+  @ApiResponse({ status: 200, type: [Subscription] })
+  async findAll(@Request() req: RequestWithUser) {
+    return this.subscriptionService.findAll();
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubscriptionDto: UpdateSubscriptionDto) {
-    return this.subscriptionsService.update(+id, updateSubscriptionDto);
+  @ApiOperation({ summary: 'update subscription' })
+  @ApiResponse({ status: 200, type: Subscription })
+  async update(
+    @Request() req: RequestWithUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateSubscriptionDto,
+  ) {
+    return this.subscriptionService.update(id, dto, req.session);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subscriptionsService.remove(+id);
+  @ApiOperation({ summary: 'delete subscription' })
+  @ApiResponse({ status: 200 })
+  async remove(@Request() req: RequestWithUser, @Param('id') id: number) {
+    return this.subscriptionService.remove(Number(id), req.session);
   }
 }

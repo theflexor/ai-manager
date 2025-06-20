@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { WalletService } from './wallet.service';
-import { CreateWalletDto } from './dto/create-wallet.dto';
-import { UpdateWalletDto } from './dto/update-wallet.dto';
+import { DepositDto } from './dto/deposit.dto';
+import { Request } from 'express';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { RequestWithUser } from 'src/types/request-with-user';
+import { Wallet } from './entities/wallet.entity';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('wallet')
+@UseGuards(JwtGuard)
 export class WalletController {
   constructor(private readonly walletService: WalletService) {}
 
-  @Post()
-  create(@Body() createWalletDto: CreateWalletDto) {
-    return this.walletService.create(createWalletDto);
+  @Post('deposit')
+  @ApiResponse({ status: 200, type: Wallet })
+  async deposit(
+    @Body() depositDto: DepositDto,
+    @Req() req: RequestWithUser,
+  ): Promise<Wallet> {
+    const userId = req.session['userId'];
+    return this.walletService.deposit(Number(userId), depositDto.amount);
   }
 
   @Get()
-  findAll() {
-    return this.walletService.findAll();
+  @ApiResponse({ status: 200, type: Wallet })
+  async getBalance(@Req() req: RequestWithUser): Promise<Wallet> {
+    const userId = req.session['userId'];
+    console.log('123', userId);
+    return this.walletService.getBalance(Number(userId));
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.walletService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWalletDto: UpdateWalletDto) {
-    return this.walletService.update(+id, updateWalletDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.walletService.remove(+id);
+  @Get('transactions')
+  async getTransactions(@Req() req: RequestWithUser) {
+    const userId = +req.session['userId'];
+    return this.walletService.getTransactions(userId);
   }
 }
