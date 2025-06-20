@@ -1,10 +1,10 @@
-import type { Metadata } from "next"
-import { ProfileForm } from "@/features/profile/ui/profile-form"
+import type { Metadata } from 'next';
+import { ProfileForm } from '@/features/profile/ui/profile-form';
 
 export const metadata: Metadata = {
-  title: "Profile - AI Subscription Manager",
-  description: "Manage your profile",
-}
+  title: 'Profile - AI Subscription Manager',
+  description: 'Manage your profile',
+};
 
 export default function ProfilePage() {
   return (
@@ -15,6 +15,6 @@ export default function ProfilePage() {
       </div>
       <ProfileForm />
     </div>
-  )
+  );
 }
 

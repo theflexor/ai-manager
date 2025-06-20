@@ -25,8 +25,14 @@ import { Input } from '@/shared/ui/input';
 import { Textarea } from '@/shared/ui/textarea';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  useProfileQuery,
+  useUpdateUserMutation,
+} from '@/entities/user/model/queries';
+import { useSessionQuery } from '@/entities/session';
+import { useAuthPayload } from '@/entities/user/model/utils';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -40,32 +46,51 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-// This can come from your database or API
-const defaultValues: Partial<ProfileFormValues> = {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  bio: "I'm a software engineer with a passion for AI and subscription management.",
-};
-
 export function ProfileForm() {
-  const [isLoading, setIsLoading] = useState(false);
+  const { userId } = useAuthPayload();
+  const { data, isSuccess, isLoading, isFetching } = useProfileQuery(userId); // Replace '1' with actual user ID
+  const { mutate, isPending } = useUpdateUserMutation();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {},
+    disabled: isLoading || isPending,
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    setIsLoading(true);
-
+  async function onSubmit(data: ProfileFormValues) {
+    await mutate({
+      id: userId, // Replace with actual user ID
+      data: {
+        bio: data.bio || '',
+        profilePicture: '',
+        fullName: data.name || '',
+      },
+    });
     // Simulate API call
     setTimeout(() => {
       toast(`{
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       }`);
-      setIsLoading(false);
     }, 1000);
+  }
+
+  useEffect(() => {
+    if (isSuccess && data) {
+      form.reset({
+        name: data.fullName || '',
+        email: data.email || '',
+        bio: data.bio || '',
+      });
+    }
+  }, [isSuccess, data, form]);
+
+  if (isFetching) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   return (
@@ -80,10 +105,17 @@ export function ProfileForm() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src="/placeholder.png" alt="Profile" />
+                  <AvatarImage
+                    src={
+                      data.profilePicture
+                        ? data.profilePicture
+                        : '/placeholder.png'
+                    }
+                    alt="Profile"
+                  />
                   <AvatarFallback>JD</AvatarFallback>
                 </Avatar>
-                <Button variant="outline" size="sm">
+                <Button type="button" variant="outline" size="sm">
                   Change Avatar
                 </Button>
               </div>
@@ -108,7 +140,7 @@ export function ProfileForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Your email" {...field} />
+                      <Input placeholder="Your email" disabled {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,7 +168,7 @@ export function ProfileForm() {
                 )}
               />
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Updating...' : 'Update profile'}
+                {isLoading || isPending ? 'Updating...' : 'Update profile'}
               </Button>
             </form>
           </Form>

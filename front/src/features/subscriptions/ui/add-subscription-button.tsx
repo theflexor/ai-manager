@@ -29,56 +29,97 @@ import {
 
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Textarea } from '@/shared/ui/textarea';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSubscriptionMutation } from '@/entities/subscription/model/queries';
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  provider: z.string().min(2, {
-    message: 'Provider must be at least 2 characters.',
-  }),
-  price: z.string().refine((val) => !isNaN(Number(val)), {
-    message: 'Price must be a number.',
-  }),
-  billingCycle: z.string({
-    required_error: 'Please select a billing cycle.',
-  }),
-  category: z.string().min(2, {
-    message: 'Category must be at least 2 characters.',
-  }),
-});
+const formSchema = z
+  .object({
+    serviceName: z.string().min(2, {
+      message: 'Service name must be at least 2 characters.',
+    }),
+    price: z.number().min(0, {
+      message: 'Price must be a positive number.',
+    }),
+    currency: z.string().min(2, {
+      message: 'Currency must be at least 2 characters.',
+    }),
+    description: z.string().optional(),
+    startsAt: z.string().min(1, {
+      message: 'Start date is required.',
+    }),
+    expiresAt: z.string().min(1, {
+      message: 'Expiry date is required.',
+    }),
+    type: z.enum(['personal', 'group', 'trial'], {
+      required_error: 'Please select a subscription type.',
+    }),
+  })
+  .refine((data) => new Date(data.expiresAt) > new Date(data.startsAt), {
+    message: 'Expiry date must be after start date.',
+    path: ['expiresAt'],
+  });
 
 export function AddSubscriptionButton() {
   const [open, setOpen] = useState(false);
 
+  const { mutate } = useSubscriptionMutation();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      provider: '',
-      price: '',
-      billingCycle: 'monthly',
-      category: '',
+      serviceName: '',
+      price: 0,
+      currency: 'USD',
+      description: '',
+      startsAt: new Date().toISOString().split('T')[0], // Today in YYYY-MM-DD format
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0], // 30 days from now
+      type: 'personal',
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real app, this would call an API to add the subscription
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // Convert string dates to ISO format for API
+    const payload = {
+      ...values,
+      startsAt: new Date(values.startsAt).toISOString(),
+      expiresAt: new Date(values.expiresAt).toISOString(),
+    };
 
-    toast(`{
-      title: 'Subscription added',
-      description: 
-      ' has been added to your subscriptions.',
-    }`);
+    console.log(payload);
+
+    await mutate({
+      description: payload.description || '',
+      expiresAt: payload.expiresAt,
+      price: payload.price,
+      serviceName: payload.serviceName,
+      currency: payload.currency,
+      startsAt: payload.startsAt,
+      type: payload.type,
+    });
+
+    toast.success('Subscription added', {
+      description: `${values.serviceName} has been added to your subscriptions.`,
+    });
 
     setOpen(false);
-    form.reset();
+    form.reset({
+      serviceName: '',
+      price: 0,
+      currency: 'USD',
+      description: '',
+      startsAt: new Date().toISOString().split('T')[0],
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0],
+      type: 'personal',
+    });
   }
 
   return (
@@ -89,11 +130,11 @@ export function AddSubscriptionButton() {
           Add Subscription
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Subscription</DialogTitle>
           <DialogDescription>
-            Add a new AI subscription to your account.
+            Add a new subscription to your account.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -103,10 +144,10 @@ export function AddSubscriptionButton() {
           >
             <FormField
               control={form.control}
-              name="name"
+              name="serviceName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Service Name</FormLabel>
                   <FormControl>
                     <Input placeholder="ChatGPT Plus" {...field} />
                   </FormControl>
@@ -114,70 +155,130 @@ export function AddSubscriptionButton() {
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Price</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        placeholder="20"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(Number.parseFloat(e.target.value) || 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency</FormLabel>
+                    <FormControl>
+                      <Input placeholder="USD" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="provider"
+              name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Provider</FormLabel>
+                  <FormLabel>Description (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="OpenAI" {...field} />
+                    <Textarea
+                      placeholder="Subscription description..."
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="startsAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Start Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="expiresAt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expiry Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        min={
+                          form.watch('startsAt') ||
+                          new Date().toISOString().split('T')[0]
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="price"
+              name="type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input placeholder="20" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="billingCycle"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Billing Cycle</FormLabel>
+                  <FormLabel>Subscription Type</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a billing cycle" />
+                        <SelectValue placeholder="Select subscription type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="yearly">Yearly</SelectItem>
-                      <SelectItem value="quarterly">Quarterly</SelectItem>
+                      <SelectItem value="personal">Personal</SelectItem>
+                      <SelectItem value="group">Group</SelectItem>
+                      <SelectItem value="trial">Trial</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <Input placeholder="AI Assistant" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             <DialogFooter>
               <Button type="submit">Add Subscription</Button>
             </DialogFooter>

@@ -1,8 +1,5 @@
-import * as bcrypt from 'bcrypt';
-
 import {
   BadRequestException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -74,9 +71,11 @@ export class AuthService {
   }
 
   private generateTokens(user: User) {
-    const payload = { sub: user.id, email: user.email };
+    const payload = { userId: user.id, email: user.email };
+    console.log(payload);
+
     const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '30s',
+      expiresIn: '10000s',
     });
 
     const refreshToken = this.jwtService.sign(payload, {

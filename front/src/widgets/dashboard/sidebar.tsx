@@ -1,6 +1,12 @@
 'use client';
 
-import { CreditCard, LayoutDashboard, Settings, Users } from 'lucide-react';
+import {
+  CreditCard,
+  LayoutDashboard,
+  Settings,
+  Users,
+  Wallet,
+} from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
@@ -27,6 +33,11 @@ const sidebarItems = [
     title: 'Profile',
     href: '/profile',
     icon: Settings,
+  },
+  {
+    title: 'Wallet',
+    href: '/wallet',
+    icon: Wallet,
   },
 ];
 

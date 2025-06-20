@@ -9,10 +9,12 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder().setTitle('AI manager').build();
+  const config = new DocumentBuilder()
+    .setTitle('AI manager')
+    .setDescription('хуйня')
+    .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-
   app.use(cookieParser());
   app.enableCors({
     origin: 'http://localhost:3000', // Указываем фронтенд URL

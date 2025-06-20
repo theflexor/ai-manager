@@ -20,9 +20,13 @@ import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { Wallet } from './wallet/entities/wallet.entity';
 import { WalletModule } from './wallet/wallet.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { GroupMembersModule } from './group-members/group-members.module';
+import { GroupMember } from './group-members/entities/group_members.entity';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -44,9 +48,10 @@ import { WalletModule } from './wallet/wallet.module';
           Wallet,
           Transaction,
           Group,
+          GroupMember,
         ],
         synchronize: true,
-        logging: true,
+        // logging: true,
       }),
     }),
     UsersModule,
@@ -59,6 +64,7 @@ import { WalletModule } from './wallet/wallet.module';
     SubscriptionMembersModule,
     GroupsModule,
     SubscriptionsAdminModule,
+    GroupMembersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

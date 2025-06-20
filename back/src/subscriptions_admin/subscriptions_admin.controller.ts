@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
-import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+// import { CreateSubscriptionDto } from './dto/create-subscription.dto';
 import { SubscriptionAdminService } from './subscriptions_admin.service';
 
 @Controller('admin/subscriptions')
@@ -10,9 +10,7 @@ export class SubscriptionAdminController {
    * Создание новой подписки (администраторский эндпоинт)
    */
   @Post()
-  async createSubscription(
-    @Body() createSubscriptionDto: CreateSubscriptionDto,
-  ) {
+  async createSubscription(@Body() createSubscriptionDto: any) {
     return this.subscriptionService.createSubscription(
       createSubscriptionDto.serviceName,
       createSubscriptionDto.price,

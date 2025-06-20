@@ -22,9 +22,17 @@ import {
 
 import { Button } from '@/shared/ui/button';
 import { useRouter } from 'next/navigation';
+import { useAuthPayload } from '@/entities/user/model/utils';
+import { useProfileQuery } from '@/entities/user/model/queries';
 
 export function UserNav() {
   const router = useRouter();
+  const { userId } = useAuthPayload();
+  const { data } = useProfileQuery(userId!);
+
+  if (!data) {
+    return null; // or a loading state
+  }
 
   return (
     <DropdownMenu>
@@ -39,9 +47,9 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">John Doe</p>
+            <p className="text-sm font-medium leading-none">{data.fullName}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              john.doe@example.com
+              {data.email}
             </p>
           </div>
         </DropdownMenuLabel>

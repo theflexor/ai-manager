@@ -31,10 +31,6 @@ export class TransactionsService {
     if (type === TransactionType.WITHDRAW && wallet.balance < amount) {
       throw new BadRequestException('Недостаточно средств');
     }
-
-    wallet.balance += type === TransactionType.DEPOSIT ? amount : -amount;
-    await this.walletRepo.save(wallet);
-
     const transaction = this.transactionRepo.create({
       amount,
       type,
@@ -46,9 +42,9 @@ export class TransactionsService {
     return this.transactionRepo.save(transaction);
   }
 
-  async getUserTransactions(user: User): Promise<Transaction[]> {
+  async getUserTransactions(userId: number): Promise<Transaction[]> {
     return this.transactionRepo.find({
-      where: { user: { id: user.id } },
+      where: { user: { id: userId } },
       order: { createdAt: 'DESC' },
     });
   }

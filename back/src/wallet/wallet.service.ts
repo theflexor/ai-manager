@@ -25,14 +25,18 @@ export class WalletService {
   ) {}
 
   // 💳 Пополнение баланса
-  async deposit(userId: string, amount: number): Promise<Wallet> {
+  async deposit(userId: number, amount: number): Promise<Wallet> {
+    console.log('working deposit', userId);
+
     const user = await this.userRepository.findOne({
-      where: { id: +userId },
+      where: { id: userId },
       relations: ['wallet'],
     });
+    console.log(user);
 
     if (!user || !user.wallet) {
-      throw new NotFoundException('Кошелек не найден');
+      console.log(user);
+      throw new NotFoundException(JSON.stringify(user));
     }
 
     user.wallet.balance += amount;
@@ -53,20 +57,19 @@ export class WalletService {
   }
 
   // 📊 Получить текущий баланс
-  async getBalance(userId: string): Promise<{ balance: number }> {
+  async getBalance(userId: number): Promise<Wallet> {
     const wallet = await this.walletRepository.findOne({
-      where: { user: { id: +userId } },
+      where: { user: { id: userId } },
     });
-
     if (!wallet) {
       throw new NotFoundException('Кошелек не найден');
     }
 
-    return { balance: Number(wallet.balance) };
+    return wallet;
   }
 
   // 🧾 Получить историю транзакций
-  async getTransactions(userId: string): Promise<Transaction[]> {
+  async getTransactions(userId: number): Promise<Transaction[]> {
     return this.transactionRepository.find({
       where: { user: { id: +userId } },
       order: { createdAt: 'DESC' },

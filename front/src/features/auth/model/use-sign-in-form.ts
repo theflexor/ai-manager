@@ -26,7 +26,7 @@ export function useSignInForm() {
 
   const signInMutation = useMutation({
     mutationFn: authControllerSignIn,
-    onSuccess() {
+    onSuccess(data) {
       router.push(ROUTES.HOME);
       toast.success('Sign in successful', {
         description: 'You have successfully signed in.',

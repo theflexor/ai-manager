@@ -1,11 +1,13 @@
-import type { Metadata } from "next"
-import { GroupsList } from "@/features/groups/ui/groups-list"
-import { CreateGroupButton } from "@/features/groups/ui/create-group-button"
+import type { Metadata } from 'next';
+import { GroupsList } from '@/features/groups/ui/groups-list';
+import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/constants/routes';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "Groups - AI Subscription Manager",
-  description: "Manage your subscription groups",
-}
+  title: 'Groups - AI Subscription Manager',
+  description: 'Manage your subscription groups',
+};
 
 export default function GroupsPage() {
   return (
@@ -13,12 +15,19 @@ export default function GroupsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Groups</h1>
-          <p className="text-muted-foreground">Manage your subscription groups and members</p>
+          <p className="text-muted-foreground">
+            Manage your subscription groups and members
+          </p>
         </div>
-        <CreateGroupButton />
+        <Link href={ROUTES.CREATE_GROUP}>
+          <Button>
+            <span className="ml-2">+</span>
+            Create Group
+          </Button>
+        </Link>
       </div>
       <GroupsList />
     </div>
-  )
+  );
 }
 

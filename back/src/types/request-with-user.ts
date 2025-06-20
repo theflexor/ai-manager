@@ -2,9 +2,11 @@
 import { Request } from 'express';
 
 export interface RequestWithUser extends Request {
-  session: {
-    userId: string;
-    email: string;
-  };
+  session: UserSession;
+}
+
+export interface UserSession {
+  userId: number;
+  email: string;
 }
 
